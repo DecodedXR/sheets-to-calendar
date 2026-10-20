@@ -1,0 +1,4 @@
+title: Free Sheets to Calendar sync
+description: Create Google Calendar events from Google Sheets rows and keep them in sync. Free Apps Script, no add-on.
+plugins:
+  - jekyll-sitemap
