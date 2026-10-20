@@ -1,6 +1,7 @@
 ---
 title: Free Sheets to Calendar sync
 description: Create Google Calendar events from Google Sheets rows and keep them in sync when you edit the sheet. One free Apps Script file, no add-on.
+image: https://decodedxr.github.io/sheets-to-calendar/assets/cover.png
 ---
 
 # Free Sheets to Calendar sync

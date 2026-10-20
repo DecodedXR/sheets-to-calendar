@@ -1,6 +1,7 @@
 ---
 title: How to add Google Sheets rows to Google Calendar automatically (free)
 description: Create Google Calendar events from a Google Sheet and keep them in sync when you edit rows. All-day or timed events, guests, hourly auto-sync. Free Apps Script, no add-on.
+image: https://decodedxr.github.io/sheets-to-calendar/assets/cover.png
 ---
 {% raw %}
 
