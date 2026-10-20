@@ -42,6 +42,7 @@ Events go to your main calendar. To use another calendar, open its **Settings an
 
 ## More free Google tools
 
+- [Form Prefill Links](https://github.com/DecodedXR/form-prefill-links): a pre-filled Google Form link for every row.
 - [Sheets Mail Merge](https://github.com/DecodedXR/sheets-mail-merge): a personalized email to every row.
 - [Sheets Deadline Reminders](https://github.com/DecodedXR/sheets-deadline-reminders): automatic emails before a due date.
 - [Sheets Doc Merge](https://github.com/DecodedXR/sheets-doc-merge): one PDF per row from a Google Docs template.
