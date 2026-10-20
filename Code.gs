@@ -1,3 +1,5 @@
+/** @OnlyCurrentDoc */ // asks Google for access to this spreadsheet only, not all your sheets
+
 /**
  * Sheets to Calendar: turn each row into a Google Calendar event, and keep it in sync.
  *
