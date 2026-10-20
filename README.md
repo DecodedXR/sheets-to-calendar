@@ -42,6 +42,7 @@ Events go to your main calendar. To use another calendar, open its **Settings an
 
 ## More free Google tools
 
+- [Gmail CSV to Sheets](https://github.com/DecodedXR/gmail-csv-to-sheets): import emailed CSV reports into a sheet every hour.
 - [Form Prefill Links](https://github.com/DecodedXR/form-prefill-links): a pre-filled Google Form link for every row.
 - [Sheets Mail Merge](https://github.com/DecodedXR/sheets-mail-merge): a personalized email to every row.
 - [Sheets Deadline Reminders](https://github.com/DecodedXR/sheets-deadline-reminders): automatic emails before a due date.
