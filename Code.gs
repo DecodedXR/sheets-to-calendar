@@ -6,6 +6,8 @@
  * Setup: header row with "Title" and "Start" columns. Optional: "End", "Description",
  * "Location", "Guests" (comma-separated emails). A "Calendar Event" column is created
  * to remember each row's event, so edits update the same event instead of duplicating it.
+ * A copied row (ID and all) gets its own event; the top row with an ID keeps the original,
+ * so after sorting a copy above its original, the copy takes over that event.
  * A Start with no time (e.g. 10/24/2026) makes an all-day event.
  */
 
@@ -61,6 +63,8 @@ function sync_(sheet) {
     sheet.getRange(1, eventIdx + 1).setValue(EVENT_COL);
   }
 
+  const tz = sheet.getParent().getSpreadsheetTimeZone();
+  const seen = new Set();
   const res = { created: 0, updated: 0, same: 0, failed: 0 };
   for (let r = 1; r < values.length; r++) {
     const get = name => col(name) === -1 ? '' : values[r][col(name)];
@@ -68,13 +72,15 @@ function sync_(sheet) {
     if (!title || !(get('Start') instanceof Date)) continue;
     const cell = sheet.getRange(r + 1, eventIdx + 1);
     try {
-      const when = timing_(get('Start'), shown[r][col('Start')], get('End'), col('End') === -1 ? '' : shown[r][col('End')]);
+      const when = timing_(get('Start'), shown[r][col('Start')], get('End'), col('End') === -1 ? '' : shown[r][col('End')], tz);
       const opts = {
         description: String(get('Description')),
         location: String(get('Location')),
         guests: String(get('Guests')),
       };
-      const id = String(shown[r][eventIdx] || '').replace(/^ERROR.*/, '');
+      let id = String(shown[r][eventIdx] || '').replace(/^ERROR.*/, '');
+      if (seen.has(id)) id = ''; // a copied row carries its original's ID: the top row keeps the event, a copy gets its own
+      if (id) seen.add(id);
       const ev = id && findEvent_(cal, id);
       if (!ev) {
         const made = when.allDay
@@ -95,13 +101,18 @@ function sync_(sheet) {
   return res;
 }
 
-/** Start/end for a row. A Start shown without a time means all-day; end is exclusive for all-day events. */
-function timing_(start, startShown, end, endShown) {
+/** Start/end for a row. A Start shown without a time means all-day; end is exclusive for all-day events.
+ *  Date cells arrive as midnight in the spreadsheet's time zone (tz), so read the day there, not in the script's. */
+function timing_(start, startShown, end, endShown, tz) {
   const allDay = !/\d:\d\d/.test(startShown);
   if (allDay) {
-    const s = new Date(start.getFullYear(), start.getMonth(), start.getDate());
-    const e = end instanceof Date ? new Date(end.getFullYear(), end.getMonth(), end.getDate() + 1) : new Date(s.getTime() + 86400000);
-    return { allDay, start: s, end: e > s ? e : new Date(s.getTime() + 86400000) };
+    const day = (dt, plus) => {
+      const [y, m, d] = Utilities.formatDate(dt, tz, 'yyyy-MM-dd').split('-').map(Number);
+      return new Date(y, m - 1, d + plus);
+    };
+    const s = day(start, 0);
+    const e = end instanceof Date ? day(end, 1) : day(start, 1);
+    return { allDay, start: s, end: e > s ? e : day(start, 1) };
   }
   let e = end instanceof Date ? end : null;
   if (e && !/\d:\d\d/.test(endShown)) e = null; // a date-only End on a timed event is ignored
